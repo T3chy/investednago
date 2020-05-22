@@ -25,7 +25,6 @@ export default class AddStockForm extends React.Component {
         })
     }
     render() {
-        console.log('rendered');
         return(
             
         <form onSubmit={this.handleSubmit}>

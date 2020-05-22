@@ -1,17 +1,23 @@
 import React, {Component} from 'react';
-export default class StockTable extends Component {
+import StockRow from './getstock.js';
+
+class StockTable extends Component {
     constructor(props){
         super(props)
         this.state = {
-          stocks: []
         }
+      }
+      componentDidMount (){
+          console.log("mounted")
       }
       useEffect () {
           console.log("help")
-        console.log(this.props.stocks.map(stock =>(<div>{stock.id}</div>)))
+        console.log(this.props.stocks.map(stock =>(<StockRow ticker={stock.ticker} thenDate={this.props.thenDate}/>)))
       }
       render () {
-          return <div> {this.props.stocks}</div>
+          return <div>{JSON.stringify(this.props.stocks)}</div>
+          
       }
 }
 
+export default StockTable;

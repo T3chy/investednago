@@ -1,23 +1,13 @@
-import React, {useState} from 'react';
+import React, {useState, Component} from 'react';
 // AV key 6ZW29MUK1OBHL2ZD
 // IEX token pk_ad94bab71ebf450c83c1ae8095fb8f53 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import StockRow from './getstock.js';
-import StockTable from './stockTable.js'
+import StockTable from './stockTable'
 import AddStockForm from './addStockForm';
-function App() {
-  const [unit,setUnit] = useState('days')
-  const [num,setNum] = useState('1')
-  const [thenDate,setThenDate] = useState(getThenDate(0,'hours'))
-  var stocks = [];
-  const addStock = (stockData) => {
-    const newStockList = [stockData, ...stocks]
-      stocks = newStockList;
-     
-  };
-
-  function getThenDate(unit,num) {
+import StockRow from './getstock';
+class App extends React.Component{
+  getThenDate(unit,num) {
     var today = new Date()
     if (unit === "days"){
       today.setDate(today.getDate()-num);
@@ -39,8 +29,24 @@ function App() {
     return (yyyy+ mm+ dd);
     
   }
+  state = {
+    stocks: [],
+    unit: "days",
+    num: 1,
+    thenDate: this.getThenDate(0,'hours'),
 
-  return (
+  };
+
+addStock = (stockData) => {
+  const newStockList = [stockData, ...this.state.stocks]
+   this.setState({
+     stocks: newStockList
+   })
+ 
+  
+};
+
+  render () { return (
     <div>
 
     <h1 className="Title">
@@ -48,8 +54,8 @@ function App() {
     </h1>
     <div className="stonksBox">
       <h1>
-    Your Dream Portfolio <input type="number" id="timeNumInput" placeholder="time" onChange={e => {setNum(e.target.value);setThenDate(getThenDate(unit,e.target.value));}}></input> 
-    <select id="timeUnit" onChange={ (e)=> {setUnit(e.target.value); getThenDate(e.target.value,num);setThenDate(getThenDate(unit,e.target.value));}}>
+    Your Dream Portfolio <input type="number" id="timeNumInput" placeholder="time" onChange={e => {this.setState({num:e.target.value});this.setState({thenDate:this.getThenDate(this.unit,e.target.value)});}}></input> 
+    <select id="timeUnit" onChange={ (e)=> {this.setState({unit:e.target.value});this.setState({thenDate:this.getThenDate(e.target.value,this.num)});}}>
   <option selected alue="days">days</option>
   <option value="years">years</option>
   <option value="decades">decades</option>
@@ -71,19 +77,23 @@ function App() {
             <th>Gain/Loss</th>
           </tr>
         </thead>
+        <tbody>
+        {this.state.stocks.map(stock =><StockRow ticker={stock.ticker} quantity={stock.quantity} key={stock.id} thenDate={this.state.thenDate}/>)}
+        </tbody>
       </table>
     <div>
     <br>
     </br>
-    <AddStockForm onSubmit={addStock} /></div>
+
+    <AddStockForm onSubmit={this.addStock} /></div>
 
     </div>
  <div>
- <StockTable stocks={stocks}/>
+ 
  </div>
     </div>
 
 );
 }
-
+}
 export default App;
