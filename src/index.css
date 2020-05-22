@@ -11,3 +11,11 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+.Title {
+  text-align: center;
+  font-family: 'Pangolin', curisve;
+}
+.stonksBox {
+  text-align: left;
+  padding-left: 5%;
+}
