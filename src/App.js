@@ -1,15 +1,27 @@
-import React, {useState, Component} from 'react';
+import React from 'react';
 // AV key 6ZW29MUK1OBHL2ZD
 // IEX token pk_ad94bab71ebf450c83c1ae8095fb8f53 
 import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css'
-import StockTable from './stockTable'
 import AddStockForm from './addStockForm';
 import StockRow from './getstock';
 class App extends React.Component{
-  getThenDate(unit,num) {
+  constructor(props){
+    super(props)
+    this.state = {
+    stocks: [],
+    unit: "days",
+    num: 1,
+    thenDate: this.getThenDate(0,'days'),
+
+  };
+  }
+
+  getThenDate(num,unit) {
+    console.log("num:" + num + "unit" + unit)
     var today = new Date()
     if (unit === "days"){
+      console.log(num + 'days subtracted' )
       today.setDate(today.getDate()-num);
     }
     else if (unit === "months"){
@@ -26,25 +38,23 @@ class App extends React.Component{
     var yyyy = today.getFullYear();
     if(dd<10) dd='0'+dd;
     if(mm<10) mm='0'+mm;
+    console.log(yyyy+ mm+ dd)
     return (yyyy+ mm+ dd);
     
   }
-  state = {
-    stocks: [],
-    unit: "days",
-    num: 1,
-    thenDate: this.getThenDate(0,'hours'),
 
-  };
 
 addStock = (stockData) => {
   const newStockList = [stockData, ...this.state.stocks]
    this.setState({
      stocks: newStockList
    })
- 
-  
-};
+  };
+getTotalGL() {
+  var t = document.getElemenetById("table")
+  console.log(t)
+}
+
 
   render () { return (
     <div>
@@ -54,11 +64,11 @@ addStock = (stockData) => {
     </h1>
     <div className="stonksBox">
       <h1>
-    Your Dream Portfolio <input type="number" id="timeNumInput" placeholder="time" onChange={e => {this.setState({num:e.target.value});this.setState({thenDate:this.getThenDate(this.unit,e.target.value)});}}></input> 
-    <select id="timeUnit" onChange={ (e)=> {this.setState({unit:e.target.value});this.setState({thenDate:this.getThenDate(e.target.value,this.num)});}}>
-  <option selected alue="days">days</option>
-  <option value="years">years</option>
-  <option value="decades">decades</option>
+    Your Dream Portfolio <input type="number" id="timeNumInput" placeholder="1" onChange={e => {this.setState({num:e.target.value});}}></input> 
+    <select id="timeUnit" defaultValue="days" value={this.unit}>
+  <option value="days">day(s)</option>
+  <option value="years">year(s)</option>
+  <option value="decades">decade(s)</option>
 </select> ago
 <br />
 
@@ -67,7 +77,7 @@ addStock = (stockData) => {
       </h1>
     </div>
     <div className="container">
-      <table className="table mt-5">
+      <table id="table" className="table mt-5">
         <thead>
           <tr>
             <th>Ticker</th>
@@ -77,14 +87,14 @@ addStock = (stockData) => {
             <th>Gain/Loss</th>
           </tr>
         </thead>
-        <tbody>
-        {this.state.stocks.map(stock =><StockRow ticker={stock.ticker} quantity={stock.quantity} key={stock.id} thenDate={this.state.thenDate}/>)}
+        <tbody onChange={this.getTotalGL}>
+        {this.state.stocks.map(stock =><StockRow ticker={stock.ticker} quantity={stock.quantity} key={stock.id} fromDate={this.getThenDate(this.state.num,this.state.unit)}/>)}
         </tbody>
       </table>
     <div>
     <br>
     </br>
-
+    {this.getTotalGL}
     <AddStockForm onSubmit={this.addStock} /></div>
 
     </div>
